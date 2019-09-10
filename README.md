@@ -2,6 +2,8 @@
 
 Add the `redis-cli` and `redis-server` CLIs to your application with Cloud Native Buildpacks.
 
+Redis is built from source, but only once. Thanks to Cloud Native Buildpacks's rebaseable run layer, and caching support, each version of Redis will only ever be compiled once.
+
 ## Examples
 
 Install Redis:
@@ -12,8 +14,9 @@ $ pack build redis-app --buildpack . --path . \
 $ docker run -ti redis-app bash
 cnb@1a08ed47cfbf:/workspace$ redis-cli -v
 redis-cli 5.0.5
-
 ```
+
+The first time the `redis-app` image is built, Redis will be built from source. On all subsequent builds it will be reused from the cache layer.
 
 It will install the latest v5 Redis by default.
 
