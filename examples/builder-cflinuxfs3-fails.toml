@@ -1,0 +1,25 @@
+# pack create-builder starkandwayne/redis-builder-example:cflinuxfs3 \
+#                     -b examples/builder-cflinuxfs3.toml
+# pack build redis-app --builder starkandwayne/redis-builder-example:cflinuxfs3 --clear-cache
+# ===> BUILDING
+# [builder] /cnb/buildpacks/com.starkandwayne.buildpacks.redis/1.0.0/bin/build: line 10: yj: command not found
+
+description = "redis buildpack example"
+
+[lifecycle]
+  version = "0.4.0"
+
+[[buildpacks]]
+  id = "com.starkandwayne.buildpacks.redis"
+  uri = ".."
+
+
+[[order]]
+
+  [[order.group]]
+    id = "com.starkandwayne.buildpacks.redis"
+
+[stack]
+  id = "org.cloudfoundry.stacks.cflinuxfs3"
+  build-image = "cloudfoundry/build:full-cnb"
+  run-image = "cloudfoundry/run:full-cnb"

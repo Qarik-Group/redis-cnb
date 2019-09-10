@@ -1,0 +1,28 @@
+# pack create-builder starkandwayne/redis-builder-example:cnbs \
+#                     -b examples/builder-cnbs-fails.toml
+# pack build redis-app --builder starkandwayne/redis-builder-example:cnbs --clear-cache
+# ===> BUILDING
+# [builder] ---> Redis Buildpack
+# [builder] ---> Install Redis 5.0.5
+# [builder] /cnb/buildpacks/com.starkandwayne.buildpacks.redis/1.0.0/vendor/redis-5.0.5.tar.gz: OK
+# [builder] /cnb/buildpacks/com.starkandwayne.buildpacks.redis/1.0.0/bin/build: line 50: make: command not found
+
+description = "redis buildpack example"
+
+[lifecycle]
+  version = "0.4.0"
+
+[[buildpacks]]
+  id = "com.starkandwayne.buildpacks.redis"
+  uri = ".."
+
+
+[[order]]
+
+  [[order.group]]
+    id = "com.starkandwayne.buildpacks.redis"
+
+[stack]
+  id = "io.buildpacks.stacks.bionic"
+  build-image = "cnbs/build:bionic"
+  run-image = "cnbs/run:bionic"

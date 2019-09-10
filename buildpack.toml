@@ -30,6 +30,7 @@ id = "io.buildpacks.stacks.bionic"
 # [[stacks]]
 # id = "org.cloudfoundry.stacks.tiny"
 
+# Fails due to missing yj
 # [[stacks]]
 # id = "org.cloudfoundry.stacks.cflinuxfs3"
 

@@ -1,0 +1,23 @@
+# pack create-builder starkandwayne/redis-builder-example:cfbase \
+#                     -b examples/builder-cfbase.toml
+# pack build redis-app --builder starkandwayne/redis-builder-example:cfbase --clear-cache
+
+description = "redis buildpack example"
+
+[lifecycle]
+  version = "0.4.0"
+
+[[buildpacks]]
+  id = "com.starkandwayne.buildpacks.redis"
+  uri = ".."
+
+
+[[order]]
+
+  [[order.group]]
+    id = "com.starkandwayne.buildpacks.redis"
+
+[stack]
+  id = "io.buildpacks.stacks.bionic"
+  build-image = "cloudfoundry/build:base-cnb"
+  run-image = "cloudfoundry/run:base-cnb"
