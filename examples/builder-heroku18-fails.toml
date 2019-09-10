@@ -1,0 +1,26 @@
+# pack create-builder starkandwayne/redis-builder-example:heroku18 \
+#                     -b examples/builder-heroku18.toml
+# pack build redis-app --builder starkandwayne/redis-builder-example:heroku18 --clear-cache
+# ===> BUILDING
+# [builder] /cnb/buildpacks/com.starkandwayne.buildpacks.redis/1.0.0/bin/build: line 10: jq: command not found
+# [builder] /cnb/buildpacks/com.starkandwayne.buildpacks.redis/1.0.0/bin/build: line 10: yj: command not found
+
+description = "redis buildpack example"
+
+[lifecycle]
+  version = "0.4.0"
+
+[[buildpacks]]
+  id = "com.starkandwayne.buildpacks.redis"
+  uri = ".."
+
+
+[[order]]
+
+  [[order.group]]
+    id = "com.starkandwayne.buildpacks.redis"
+
+[stack]
+  id = "heroku-18"
+  build-image = "heroku/pack:18-build"
+  run-image = "heroku/pack:18"
