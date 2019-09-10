@@ -7,10 +7,15 @@ echo "---> Redis Buildpack"
 cp -r $buildpack_dir/layer/* $layer_dir/
 
 redis_version=5.0.5
-echo "---> Install Redis $redis_version"
-redis_tgz=$buildpack_dir/vendor/redis-$redis_version.tar.gz
 
+if [[ -f $layer_dir/redis.toml ]] ; then
+  layer_redis_version=$($layer_dir/redis/bin/redis-cli -v | awk '{print $2}')
+  echo "---> Reusing Redis $layer_redis_version"
+else
 (
+  echo "---> Install Redis $redis_version"
+  redis_tgz=$buildpack_dir/vendor/redis-$redis_version.tar.gz
+
   redis_src_dir=$(mktemp -d)
   function atexit {
     rm -rf $redis_src_dir
@@ -23,3 +28,4 @@ redis_tgz=$buildpack_dir/vendor/redis-$redis_version.tar.gz
   mkdir -p $layer_dir/redis
   make PREFIX=$layer_dir/redis install
 )
+fi
