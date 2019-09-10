@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Run this script to download all [[metadata.dependencies]] into vendor/
+# Used prior to adding buildpack into a Builder image to be entirely offline
+
+set -eu
+
+buildpack_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+
+dependencies=$(cat $buildpack_dir/buildpack.toml | yj -t | jq -r '.metadata.dependencies')
+
+for row in $(echo "${dependencies}" | jq -r '.[] | @base64'); do
+  _jq() {
+    echo ${row} | base64 --decode | jq -r ${1}
+  }
+
+  filename=$(basename $(_jq '.source'))
+  url=$(_jq '.source')
+  sha256=$(_jq '.source_sha256')
+  echo "$sha256  vendor/$filename" | sha256sum -c --status || {
+    echo "Fetching $url"
+    rm -rf vendor/$filename
+    curl -L -o vendor/$filename $url
+  }
+  echo "$sha256  vendor/$filename" | sha256sum -c
+done

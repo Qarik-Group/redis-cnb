@@ -28,3 +28,15 @@ $ docker run -ti redis-app bash
 cnb@1a08ed47cfbf:/workspace$ redis-cli -v
 redis-cli 4.0.14
 ```
+
+## Download dependencies
+
+Whilst `bin/build` can download dependencies on demand, it is lovely for the dependencies to already be local when the buildpack is used (e.g. within a Builder).
+
+Prior to using the buildpack, or including it in a Builder, download the `[[metadata.dependencies]]` into `vendor/` folder:
+
+```plain
+./bin/vendor-assets
+```
+
+It will verify their sha256 values.
