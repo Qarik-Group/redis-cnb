@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# This script is to be run within a packaged OCI so as to tarball up
+# the generated layer, so as to allow it to be publicly stored,
+# and downloadable via buildpack.toml
+
+set -eu
+
+: ${BUILDPACK_ID:?required from buildpack.toml}
+: ${BLOB_PATH:?required}
+
+cd /layers/$BUILDPACK_ID/
+
+rm -rf $BLOB_PATH
+tar cfz $BLOB_PATH *
+
+tar tfz $BLOB_PATH
+ls -lh $BLOB_PATH

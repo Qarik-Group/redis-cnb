@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -eu
+
+redis_major_version=${REDIS_MAJOR_VERSION:-5}
+redis_dependency=$(cat buildpack.toml | yj -t | jq -r --arg version $redis_major_version '.metadata.dependencies | map(select(.id=="redis" and .major_version==$version)) | first // "X"')
+redis_version=$(echo "$redis_dependency" | jq -r ".version")
+buildpack_id=$(cat buildpack.toml| yj -t |jq -r .buildpack.id)
+
+pack build redis-sample:$redis_major_version \
+  -e REDIS_MAJOR_VERSION=$redis_major_version \
+  --clear-cache \
+  --buildpack . \
+  --builder cloudfoundry/cnb:bionic \
+  --path .
+
+docker run -ti \
+  -v $PWD/vendor:/blobs \
+  -e BLOB_PATH=/blobs/redis-compiled-$redis_version.tar.gz \
+  -e BUILDPACK_ID=$buildpack_id \
+  -v $PWD:/buildpack \
+  redis-sample:$redis_major_version /buildpack/bin/pack-layer-inner
