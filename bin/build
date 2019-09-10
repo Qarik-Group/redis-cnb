@@ -2,33 +2,20 @@
 
 set -eu
 
-redis_version=${REDIS_VERSION:-5.0.5}
-accept_redis_download=${ACCEPT_REDIS_DOWNLOAD:-0}
-
 layer_dir=$1
 buildpack_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
+redis_major_version=${REDIS_MAJOR_VERION:-5}
+accept_redis_download=${ACCEPT_REDIS_DOWNLOAD:-0}
+
+redis_dependency=$(cat $buildpack_dir/buildpack.toml | yj -t | jq -r --arg version $redis_major_version '.metadata.dependencies | map(select(.id=="redis" and .major_version==$version)) | first // "X"')
+[[ "$redis_dependency" == "X" ]] && { echo "     ERROR: Unknown \$REDIS_MAJOR_VERSION"; exit 1; }
+redis_version=${REDIS_VERSION:-$(echo "$redis_dependency" | jq -r ".version")}
+
+redis_src_url="http://download.redis.io/releases/redis-${redis_version}.tar.gz"
+
 echo "---> Redis Buildpack"
 cp -r $buildpack_dir/layer/* $layer_dir/
-
-redis_dependency=$(cat $buildpack_dir/buildpack.toml | yj -t | jq -r --arg version $redis_version '.metadata.dependencies | map(select(.id=="redis" and .version==$version))')
-if [[ "$redis_dependency" == "[]" ]]; then
-  if [[ "${accept_redis_download}" == "1" ]]; then
-    echo "     Attempting download of Redis $redis_version"
-    redis_src_url="http://download.redis.io/releases/redis-${redis_version}.tar.gz"
-  else
-    echo "     ERROR: Unknown/not supported version of Redis $redis_version"
-    echo "     Force download with \$ACCEPT_REDIS_DOWNLOAD=1"
-    exit 1
-  fi
-fi
-
-if [[ ${redis_src_url:-X} != "X" ]]; then
-(
-  cd $buildpack_dir/vendor
-  curl -LO $redis_src_url
-)
-fi
 
 layer_redis_version=$($layer_dir/redis/bin/redis-cli 2>/dev/null -v | awk '{print $2}')
 if [[ "${layer_redis_version:-X}" == "$redis_version" ]] ; then
@@ -36,7 +23,16 @@ if [[ "${layer_redis_version:-X}" == "$redis_version" ]] ; then
 else
 (
   echo "---> Install Redis $redis_version"
+
+
   redis_tgz=$buildpack_dir/vendor/redis-$redis_version.tar.gz
+  if [[ ! -f $redis_tgz ]]; then
+  (
+    echo "     Downloading Redis $redis_version"
+    cd $buildpack_dir/vendor
+    curl -L -o redis-$redis_version.tar.gz $redis_src_url
+  )
+  fi
 
   redis_src_dir=$(mktemp -d)
   function atexit {

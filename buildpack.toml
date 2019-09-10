@@ -11,6 +11,7 @@ name = "Redis Buildpack"
 id = "redis"
 name = "Redis"
 version = "5.0.5"
+major_version = "5"
 source = "http://download.redis.io/releases/redis-5.0.5.tar.gz"
 source_sha256 = "2139009799d21d8ff94fc40b7f36ac46699b9e1254086299f8d3b223ca54a375"
 
@@ -18,6 +19,7 @@ source_sha256 = "2139009799d21d8ff94fc40b7f36ac46699b9e1254086299f8d3b223ca54a37
 id = "redis"
 name = "Redis"
 version = "4.0.14"
+major_version = "4"
 source = "http://download.redis.io/releases/redis-4.0.14.tar.gz"
 source_sha256 = "unknown"
 
