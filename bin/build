@@ -1,16 +1,33 @@
 #!/bin/bash
 
+set -eu
+
+redis_version=${REDIS_VERSION:-5.0.5}
+accept_redis_download=${ACCEPT_REDIS_DOWNLOAD:-0}
+
 layer_dir=$1
 buildpack_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 echo "---> Redis Buildpack"
 cp -r $buildpack_dir/layer/* $layer_dir/
 
-redis_version=${REDIS_VERSION:-5.0.5}
 redis_dependency=$(cat $buildpack_dir/buildpack.toml | yj -t | jq -r --arg version $redis_version '.metadata.dependencies | map(select(.id=="redis" and .version==$version))')
 if [[ "$redis_dependency" == "[]" ]]; then
-  echo "     ERROR: Unknown/not supported version of Redis $redis_version"
-  exit 1
+  if [[ "${accept_redis_download}" == "1" ]]; then
+    echo "     Attempting download of Redis $redis_version"
+    redis_src_url="http://download.redis.io/releases/redis-${redis_version}.tar.gz"
+  else
+    echo "     ERROR: Unknown/not supported version of Redis $redis_version"
+    echo "     Force download with \$ACCEPT_REDIS_DOWNLOAD=1"
+    exit 1
+  fi
+fi
+
+if [[ ${redis_src_url:-X} != "X" ]]; then
+(
+  cd $buildpack_dir/vendor
+  curl -LO $redis_src_url
+)
 fi
 
 layer_redis_version=$($layer_dir/redis/bin/redis-cli 2>/dev/null -v | awk '{print $2}')

@@ -7,9 +7,6 @@ id = "com.starkandwayne.buildpacks.redis"
 version = "1.0.0"
 name = "Redis Buildpack"
 
-[metadata.default-versions]
-redis = "5.*"
-
 [[metadata.dependencies]]
 id = "redis"
 name = "Redis"
