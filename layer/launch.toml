@@ -1,3 +1,4 @@
 [[processes]]
-type = "redis"
-command = "redis-server"
+type = "web"
+command = "redis-server --port \$PORT"
+# command = "redis-server /layers/com.starkandwayne.buildpacks.redis/redis/config/redis.conf"
