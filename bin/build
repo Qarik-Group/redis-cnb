@@ -6,7 +6,6 @@ layer_dir=$1
 buildpack_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 redis_major_version=${REDIS_MAJOR_VERION:-5}
-accept_redis_download=${ACCEPT_REDIS_DOWNLOAD:-0}
 
 redis_dependency=$(cat $buildpack_dir/buildpack.toml | yj -t | jq -r --arg version $redis_major_version '.metadata.dependencies | map(select(.id=="redis" and .major_version==$version)) | first // "X"')
 [[ "$redis_dependency" == "X" ]] && { echo "     ERROR: Unknown \$REDIS_MAJOR_VERSION"; exit 1; }
