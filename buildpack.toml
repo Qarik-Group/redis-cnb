@@ -23,16 +23,16 @@ major_version = "4"
 source = "http://download.redis.io/releases/redis-4.0.14.tar.gz"
 source_sha256 = "1e1e18420a86cfb285933123b04a82e1ebda20bfb0a289472745a087587e93a7"
 
-# Stacks that the buildpack will work with
-[[stacks]]
-id = "org.cloudfoundry.stacks.tiny"
-
+# Stacks that the buildpack will work with (requires yj + jq)
 [[stacks]]
 id = "io.buildpacks.stacks.bionic"
 
 # [[stacks]]
+# id = "org.cloudfoundry.stacks.tiny"
+
+# [[stacks]]
 # id = "org.cloudfoundry.stacks.cflinuxfs3"
 
-[[stacks]]
-id = "heroku-18"
+# [[stacks]]
+# id = "heroku-18"
 
