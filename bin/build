@@ -1,0 +1,25 @@
+#!/bin/bash
+
+layer_dir=$1
+buildpack_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+
+echo "---> Redis Buildpack"
+cp -r $buildpack_dir/layer/* $layer_dir/
+
+redis_version=5.0.5
+echo "---> Install Redis $redis_version"
+redis_tgz=$buildpack_dir/vendor/redis-$redis_version.tar.gz
+
+(
+  redis_src_dir=$(mktemp -d)
+  function atexit {
+    rm -rf $redis_src_dir
+  }
+  trap atexit EXIT
+  cd $redis_src_dir
+  tar xfz $redis_tgz
+  cd redis*/
+
+  mkdir -p $layer_dir/redis
+  make PREFIX=$layer_dir/redis install
+)

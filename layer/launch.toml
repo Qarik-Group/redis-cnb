@@ -1,0 +1,3 @@
+[[processes]]
+type = "redis"
+command = "redis-server"
