@@ -9,9 +9,9 @@ redis_major_version=${REDIS_MAJOR_VERION:-5}
 
 redis_dependency=$(cat $buildpack_dir/buildpack.toml | yj -t | jq -r --arg version $redis_major_version '.metadata.dependencies | map(select(.id=="redis" and .major_version==$version)) | first // "X"')
 [[ "$redis_dependency" == "X" ]] && { echo "     ERROR: Unknown \$REDIS_MAJOR_VERSION"; exit 1; }
-redis_version=${REDIS_VERSION:-$(echo "$redis_dependency" | jq -r ".version")}
-
-redis_src_url="http://download.redis.io/releases/redis-${redis_version}.tar.gz"
+redis_version=$(echo "$redis_dependency" | jq -r ".version")
+redis_src_url=$(echo "$redis_dependency" | jq -r ".source")
+redis_src_sha256=$(echo "$redis_dependency" | jq -r ".source_sha256")
 
 echo "---> Redis Buildpack"
 mkdir -p $layer_dir
@@ -24,13 +24,16 @@ else
 (
   echo "---> Install Redis $redis_version"
 
-
   redis_tgz=$buildpack_dir/vendor/redis-$redis_version.tar.gz
+  echo "$redis_src_sha256  $redis_tgz" | sha256sum -c --ignore-missing || rm -f $redis_tgz
   if [[ ! -f $redis_tgz ]]; then
   (
     echo "     Downloading Redis $redis_version"
+    rm -rf $redis_tgz
+    mkdir -p $buildpack_dir/vendor
     cd $buildpack_dir/vendor
     curl -L -o redis-$redis_version.tar.gz $redis_src_url
+    echo "$redis_src_sha256  $redis_tgz" | sha256sum -c
   )
   fi
 
