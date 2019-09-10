@@ -14,6 +14,7 @@ redis_version=${REDIS_VERSION:-$(echo "$redis_dependency" | jq -r ".version")}
 redis_src_url="http://download.redis.io/releases/redis-${redis_version}.tar.gz"
 
 echo "---> Redis Buildpack"
+mkdir -p $layer_dir
 cp -r $buildpack_dir/layer/* $layer_dir/
 
 layer_redis_version=$($layer_dir/redis/bin/redis-cli 2>/dev/null -v | awk '{print $2}')
