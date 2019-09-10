@@ -7,12 +7,33 @@ id = "com.starkandwayne.buildpacks.redis"
 version = "1.0.0"
 name = "Redis Buildpack"
 
+[metadata.default-versions]
+redis = "5.*"
+
+[[metadata.dependencies]]
+id = "redis"
+name = "Redis"
+version = "5.0.5"
+source = "http://download.redis.io/releases/redis-5.0.5.tar.gz"
+source_sha256 = "2139009799d21d8ff94fc40b7f36ac46699b9e1254086299f8d3b223ca54a375"
+
+[[metadata.dependencies]]
+id = "redis"
+name = "Redis"
+version = "4.0.14"
+source = "http://download.redis.io/releases/redis-4.0.14.tar.gz"
+source_sha256 = "unknown"
+
 # Stacks that the buildpack will work with
 [[stacks]]
-id = "heroku-18"
+id = "org.cloudfoundry.stacks.tiny"
 
 [[stacks]]
 id = "io.buildpacks.stacks.bionic"
 
 [[stacks]]
 id = "org.cloudfoundry.stacks.cflinuxfs3"
+
+[[stacks]]
+id = "heroku-18"
+

@@ -6,10 +6,15 @@ buildpack_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 echo "---> Redis Buildpack"
 cp -r $buildpack_dir/layer/* $layer_dir/
 
-redis_version=5.0.5
+redis_version=${REDIS_VERSION:-5.0.5}
+redis_dependency=$(cat $buildpack_dir/buildpack.toml | yj -t | jq -r --arg version $redis_version '.metadata.dependencies | map(select(.id=="redis" and .version==$version))')
+if [[ "$redis_dependency" == "[]" ]]; then
+  echo "     ERROR: Unknown/not supported version of Redis $redis_version"
+  exit 1
+fi
 
-if [[ -f $layer_dir/redis.toml ]] ; then
-  layer_redis_version=$($layer_dir/redis/bin/redis-cli -v | awk '{print $2}')
+layer_redis_version=$($layer_dir/redis/bin/redis-cli 2>/dev/null -v | awk '{print $2}')
+if [[ "${layer_redis_version:-X}" == "$redis_version" ]] ; then
   echo "---> Reusing Redis $layer_redis_version"
 else
 (
