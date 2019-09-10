@@ -7,19 +7,24 @@ Add the `redis-cli` and `redis-server` CLIs to your application with Cloud Nativ
 Install Redis:
 
 ```plain
-pack build redis-app --no-pull --buildpack . --path .
+$ pack build redis-app --buildpack . --path . \
+    --builder cloudfoundry/cnb:bionic
+$ docker run -ti redis-app bash
+cnb@1a08ed47cfbf:/workspace$ redis-cli -v
+redis-cli 5.0.5
+
 ```
 
-Install a specific version of Redis that is supported within `buildpack.toml`:
+It will install the latest v5 Redis by default.
+
+You can choose the latest v4 Redis with `$REDIS_MAJOR_VERSION=4`:
 
 ```plain
-pack build redis-app --no-pull --buildpack . --path . -e REDIS_VERSION=4.0.14
-```
+$ pack build redis-app --buildpack . --path . \
+    --builder cloudfoundry/cnb:bionic \
+    -e REDIS_MAJOR_VERSION=4
 
-Install a specific version of Redis that can be downloaded from Internet:
-
-```plain
-pack build redis-app --no-pull --buildpack . --path . \
-    -e REDIS_VERSION=4.0.14 \
-    -e ACCEPT_REDIS_DOWNLOAD=1
+$ docker run -ti redis-app bash
+cnb@1a08ed47cfbf:/workspace$ redis-cli -v
+redis-cli 4.0.14
 ```
