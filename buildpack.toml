@@ -14,6 +14,8 @@ version = "5.0.5"
 major_version = "5"
 source = "http://download.redis.io/releases/redis-5.0.5.tar.gz"
 source_sha256 = "2139009799d21d8ff94fc40b7f36ac46699b9e1254086299f8d3b223ca54a375"
+uri = "./vendor/redis-compiled-5.0.5.tar.gz"
+sha256 = "eec2f1e70e1c80dcd1bf5b90bd48ff276e858c3be335bed616f70a86f694ae76"
 
 [[metadata.dependencies]]
 id = "redis"
@@ -22,6 +24,8 @@ version = "4.0.14"
 major_version = "4"
 source = "http://download.redis.io/releases/redis-4.0.14.tar.gz"
 source_sha256 = "1e1e18420a86cfb285933123b04a82e1ebda20bfb0a289472745a087587e93a7"
+uri = "./vendor/redis-compiled-4.0.14.tar.gz"
+sha256 = "f4cfd14e1eb09e81f162763dfabc91e461979193912e0d4271c46bd690b3c0c7"
 
 # Stacks that the buildpack will work with (requires yj + jq)
 [[stacks]]
