@@ -1,5 +1,5 @@
 # Buildpack API version
-# api = "0.2"
+api = "0.2"
 
 # Buildpack ID and metadata
 [buildpack]
@@ -15,7 +15,7 @@ major_version = "5"
 source = "http://download.redis.io/releases/redis-5.0.5.tar.gz"
 source_sha256 = "2139009799d21d8ff94fc40b7f36ac46699b9e1254086299f8d3b223ca54a375"
 uri = "./vendor/redis-compiled-5.0.5.tar.gz"
-sha256 = "eec2f1e70e1c80dcd1bf5b90bd48ff276e858c3be335bed616f70a86f694ae76"
+sha256 = "8caafa2a89e19b62125aca439e724436e6a336da9af5ae1c344ddddd4a336795"
 
 [[metadata.dependencies]]
 id = "redis"

@@ -20,3 +20,5 @@ docker run -ti \
   -e BUILDPACK_ID=$buildpack_id \
   -v $PWD:/buildpack \
   redis-sample:$redis_major_version /buildpack/bin/pack-layer-inner
+
+echo "TODO: update buildpack.toml with sha256 of compiled file"

@@ -32,7 +32,11 @@ cnb@1a08ed47cfbf:/workspace$ redis-cli -v
 redis-cli 4.0.14
 ```
 
-## Download dependencies
+## Create a Builder
+
+First, download the dependencies. Then create compiled versions of those dependencies. Finally, create a Builder.
+
+### Download dependencies
 
 Whilst `bin/build` can download dependencies on demand, it is lovely for the dependencies to already be local when the buildpack is used (e.g. within a Builder).
 
@@ -43,3 +47,31 @@ Prior to using the buildpack, or including it in a Builder, download the `[[meta
 ```
 
 It will verify their sha256 values.
+
+### Vendor compiled dependencies
+
+Next, compile and vendor the two major versions of Redis:
+
+```plain
+REDIS_MAJOR_VERSION=4 ./bin/pack-layer
+REDIS_MAJOR_VERSION=5 ./bin/pack-layer
+```
+
+### Create Builder
+
+```plain
+pack create-builder starkandwayne/redis-builder-example:cfbase \
+                    -b examples/builder-cfbase.toml
+```
+
+You can now use that builder directly, instead of the buildpack. It includes pre-compiled Redis, so much faster to apply the buildpack.
+
+```plain
+pack build redis-app --builder starkandwayne/redis-builder-example:cfbase --clear-cache
+```
+
+Or for Redis v4:
+
+```plain
+pack build redis-app --builder starkandwayne/redis-builder-example:cfbase \    -e REDIS_MAJOR_VERSION=4
+```
